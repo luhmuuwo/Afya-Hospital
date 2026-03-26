@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Pharmacy Item Details - Hospital Management{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Pharmacy Item Details</h4>
+                <span class="badge bg-secondary">{{ pharmacy_item.name }}</span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Pharmacy Item Information</h6>
+                        <dl class="row">
+                            <dt class="col-sm-5">Name:</dt>
+                            <dd class="col-sm-7"><strong>{{ pharmacy_item.name }}</strong></dd>
+
+                            <dt class="col-sm-5">Quantity:</dt>
+                            <dd class="col-sm-7">
+                                {% if pharmacy_item.quantity <= 10 %}
+                                    <span class="badge bg-danger">{{ pharmacy_item.quantity }}</span>
+                                {% else %}
+                                    {{ pharmacy_item.quantity }}
+                                {% endif %}
+                            </dd>
+
+                            <dt class="col-sm-5">Price:</dt>
+                            <dd class="col-sm-7">${{ pharmacy_item.price }}</dd>
+
+                            <dt class="col-sm-5">Expiry Date:</dt>
+                            <dd class="col-sm-7">
+                                {% if pharmacy_item.is_expired %}
+                                    <span class="badge bg-danger">{{ pharmacy_item.expiry_date|date:"M d, Y" }}</span>
+                                {% elif pharmacy_item.is_expiring_soon %}
+                                    <span class="badge bg-warning">{{ pharmacy_item.expiry_date|date:"M d, Y" }}</span>
+                                {% else %}
+                                    {{ pharmacy_item.expiry_date|date:"M d, Y" }}
+                                {% endif %}
+                            </dd>
+
+                            {% if pharmacy_item.batch_number %}
+                            <dt class="col-sm-5">Batch Number:</dt>
+                            <dd class="col-sm-7">{{ pharmacy_item.batch_number }}</dd>
+                            {% endif %}
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Status & Dates</h6>
+                        <dl class="row">
+                            <dt class="col-sm-5">Status:</dt>
+                            <dd class="col-sm-7">
+                                {% if pharmacy_item.is_expired %}
+                                    <span class="badge bg-danger">Expired</span>
+                                {% elif pharmacy_item.is_expiring_soon %}
+                                    <span class="badge bg-warning">Expiring Soon</span>
+                                {% elif pharmacy_item.quantity <= 10 %}
+                                    <span class="badge bg-danger">Low Stock</span>
+                                {% else %}
+                                    <span class="badge bg-success">OK</span>
+                                {% endif %}
+                            </dd>
+
+                            <dt class="col-sm-5">Added Date:</dt>
+                            <dd class="col-sm-7">{{ pharmacy_item.date_added|date:"F d, Y H:i" }}</dd>
+
+                            <dt class="col-sm-5">Last Updated:</dt>
+                            <dd class="col-sm-7">{{ pharmacy_item.updated_at|date:"F d, Y H:i" }}</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h6 class="text-muted">Pharmacy Item Issue History</h6>
+                        {% if issues %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Patient</th>
+                                            <th>Quantity Issued</th>
+                                            <th>Issued By</th>
+                                            <th>Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for issue in issues %}
+                                            <tr>
+                                                <td>{{ issue.issued_date|date:"M d, Y H:i" }}</td>
+                                                <td>{{ issue.patient.first_name }} {{ issue.patient.last_name }}</td>
+                                                <td>{{ issue.quantity_issued }}</td>
+                                                <td>
+                                                    {% if issue.issued_by %}
+                                                        Dr. {{ issue.issued_by.first_name }} {{ issue.issued_by.last_name }}
+                                                    {% else %}
+                                                        <span class="text-muted">N/A</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if issue.notes %}
+                                                        {{ issue.notes|truncatechars:50 }}
+                                                    {% else %}
+                                                        <span class="text-muted">—</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No pharmacy item issues recorded for this item.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="alert alert-light border">
+                    <small class="text-muted">Last updated: {{ pharmacy_item.updated_at|date:"F d, Y H:i" }}</small>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end">
+                    <a href="{% url 'myapp:pharmacy_item_list' %}" class="btn btn-secondary">Back to List</a>
+                    <a href="{% url 'myapp:update_pharmacy_item' pharmacy_item.pk %}" class="btn btn-warning">Edit Details</a>
+                    <a href="{% url 'myapp:delete_pharmacy_item' pharmacy_item.pk %}" class="btn btn-danger">Delete Pharmacy Item</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

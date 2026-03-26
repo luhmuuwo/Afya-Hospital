@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %}Patient Details - Hospital Management{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Patient Details</h4>
+                <span class="badge bg-warning text-dark">ID: {{ patient.patient_id }}</span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Personal Information</h6>
+                        <dl class="row">
+                            <dt class="col-sm-5">First Name:</dt>
+                            <dd class="col-sm-7"><strong>{{ patient.first_name }}</strong></dd>
+                            
+                            <dt class="col-sm-5">Last Name:</dt>
+                            <dd class="col-sm-7"><strong>{{ patient.last_name }}</strong></dd>
+                            
+                            <dt class="col-sm-5">Gender:</dt>
+                            <dd class="col-sm-7">{{ patient.get_gender_display }}</dd>
+                            
+                            <dt class="col-sm-5">Date of Birth:</dt>
+                            <dd class="col-sm-7">{{ patient.date_of_birth|date:"M d, Y" }}</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Contact Information</h6>
+                        <dl class="row">
+                            <dt class="col-sm-5">Email:</dt>
+                            <dd class="col-sm-7">
+                                <a href="mailto:{{ patient.email }}">{{ patient.email }}</a>
+                            </dd>
+                            
+                            <dt class="col-sm-5">Phone:</dt>
+                            <dd class="col-sm-7">
+                                <a href="tel:{{ patient.phone_number }}">{{ patient.phone_number }}</a>
+                            </dd>
+                            
+                            <dt class="col-sm-5">Address:</dt>
+                            <dd class="col-sm-7">{{ patient.address }}</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h6 class="text-muted">Registration & History</h6>
+                        <dl class="row">
+                            <dt class="col-sm-3">Registered Date:</dt>
+                            <dd class="col-sm-9">{{ patient.date_registered|date:"F d, Y H:i" }}</dd>
+                            
+                            <dt class="col-sm-3">Medical History:</dt>
+                            <dd class="col-sm-9">
+                                {% if patient.medical_history %}
+                                    <p>{{ patient.medical_history|linebreaks }}</p>
+                                {% else %}
+                                    <span class="text-muted">No medical history recorded</span>
+                                {% endif %}
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h6 class="text-muted">Appointments</h6>
+                        {% if appointments %}
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Doctor</th>
+                                            <th>Diagnosis</th>
+                                            <th>Prescribed Drugs</th>
+                                            <th>Prescription</th>
+                                            <th>Status</th>
+                                            <th class="text-end">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for appt in appointments %}
+                                            <tr>
+                                                <td>{{ appt.date|date:"M d, Y" }}</td>
+                                                <td>{{ appt.time|time:"H:i" }}</td>
+                                                <td>Dr. {{ appt.doctor.first_name }} {{ appt.doctor.last_name }}</td>
+                                                <td>
+                                                    {% if appt.diagnosis %}
+                                                        <span>{{ appt.diagnosis|truncatechars:40 }}</span>
+                                                    {% else %}
+                                                        <span class="text-muted">—</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if appt.prescribed_drugs %}
+                                                        <span>{{ appt.prescribed_drugs|truncatechars:40 }}</span>
+                                                    {% else %}
+                                                        <span class="text-muted">—</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if appt.prescription %}
+                                                        <a href="{{ appt.prescription.url }}" target="_blank" class="link-primary">Download</a>
+                                                    {% else %}
+                                                        <span class="text-muted">—</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    {% if appt.status == 'Pending' %}
+                                                        <span class="badge bg-warning text-dark">Pending</span>
+                                                    {% elif appt.status == 'Completed' %}
+                                                        <span class="badge bg-success">Completed</span>
+                                                    {% elif appt.status == 'Cancelled' %}
+                                                        <span class="badge bg-danger">Cancelled</span>
+                                                    {% else %}
+                                                        <span class="badge bg-secondary">{{ appt.status }}</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td class="text-end">
+                                                    <a href="{% url 'myapp:edit_appointment' appt.pk %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                                    {% if appt.status != 'Cancelled' %}
+                                                        <a href="{% url 'myapp:cancel_appointment' appt.pk %}" class="btn btn-sm btn-outline-danger">Cancel</a>
+                                                    {% else %}
+                                                        <span class="text-muted">N/A</span>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <p class="text-muted">No appointments scheduled for this patient.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="alert alert-light border">
+                    <small class="text-muted">Last updated: {{ patient.date_registered|date:"F d, Y H:i" }}</small>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end">
+                    <a href="{% url 'myapp:patient_list' %}" class="btn btn-secondary">Back to List</a>
+                    <a href="{% url 'myapp:book_appointment' %}?patient={{ patient.pk }}" class="btn btn-primary">Book Appointment</a>
+                    <a href="{% url 'myapp:update_patient' patient.pk %}" class="btn btn-warning">Edit Details</a>
+                    <a href="{% url 'myapp:delete_patient' patient.pk %}" class="btn btn-danger">Delete Patient</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

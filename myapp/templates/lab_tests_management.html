@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Tests Management{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-5">
+                <i class="fas fa-flask text-info"></i> Lab Tests Management
+            </h1>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'myapp:add_lab_test' %}" class="btn btn-info btn-lg">
+                <i class="fas fa-plus"></i> Add New Test
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-primary">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Total Tests</h6>
+                    <p class="display-5 text-primary">{{ test_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-warning">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Pending Tests</h6>
+                    <p class="display-5 text-warning">{{ pending_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-success">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Completed Tests</h6>
+                    <p class="display-5 text-success">{{ completed_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lab Tests Table -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">All Lab Tests</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Test ID</th>
+                                <th>Patient</th>
+                                <th>Test Name</th>
+                                <th>Requested By</th>
+                                <th>Status</th>
+                                <th>Test Date</th>
+                                <th>Completed Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for test in lab_tests %}
+                            <tr>
+                                <td><strong>#{{ test.id }}</strong></td>
+                                <td>{{ test.patient.first_name }} {{ test.patient.last_name }}</td>
+                                <td>{{ test.test_name }}</td>
+                                <td>
+                                    {% if test.requested_by %}
+                                        Dr. {{ test.requested_by.first_name }} {{ test.requested_by.last_name }}
+                                    {% else %}
+                                        <span class="text-muted">N/A</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if test.status == 'Completed' %}
+                                        <span class="badge bg-success">Completed</span>
+                                    {% elif test.status == 'Pending' %}
+                                        <span class="badge bg-warning">Pending</span>
+                                    {% elif test.status == 'Cancelled' %}
+                                        <span class="badge bg-danger">Cancelled</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ test.test_date|date:"d M Y H:i" }}</td>
+                                <td>
+                                    {% if test.completed_date %}
+                                        {{ test.completed_date|date:"d M Y H:i" }}
+                                    {% else %}
+                                        <span class="text-muted">-</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'myapp:lab_test_detail' test.pk %}" class="btn btn-sm btn-info">View</a>
+                                    <a href="{% url 'myapp:update_lab_test' test.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">No lab tests found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Quick Filters</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <a href="{% url 'myapp:lab_test_list' %}" class="btn btn-outline-warning w-100">
+                                <i class="fas fa-clock"></i> View Pending Tests
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{% url 'myapp:lab_test_list' %}" class="btn btn-outline-success w-100">
+                                <i class="fas fa-check"></i> View Completed Tests
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <a href="{% url 'myapp:homepage' %}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Book Appointment - Hospital Management{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Book an Appointment</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_patient">Patient</label>
+                            {{ form.patient }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_doctor">Doctor</label>
+                            {{ form.doctor }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_date">Date</label>
+                            {{ form.date }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_time">Time</label>
+                            {{ form.time }}
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2 justify-content-end">
+                        <button type="submit" class="btn btn-primary">Book Appointment</button>
+                        <a href="{% url 'myapp:appointment_list' %}" class="btn btn-secondary">Back to Appointments</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Patient List - Hospital Management{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1 class="mb-4">Patient Management</h1>
+        <div class="card">
+            <div class="card-body">
+                <form method="GET" action="{% url 'myapp:patient_list' %}" class="row g-3">
+                    <div class="col-md-9">
+                        <input type="text" name="search_query" class="form-control" 
+                               placeholder="Search by name, patient ID, or email" 
+                               value="{{ search_form.search_query.value|default:'' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary w-100">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Registered Patients ({{ patients.count }})</h3>
+            <a href="{% url 'myapp:register_patient' %}" class="btn btn-success">+ Register New Patient</a>
+        </div>
+
+        {% if patients %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Patient ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Gender</th>
+                            <th>Registered Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for patient in patients %}
+                        <tr>
+                            <td><strong>{{ patient.patient_id }}</strong></td>
+                            <td>{{ patient.first_name }} {{ patient.last_name }}</td>
+                            <td>{{ patient.email }}</td>
+                            <td>{{ patient.phone_number }}</td>
+                            <td>{{ patient.get_gender_display }}</td>
+                            <td>{{ patient.date_registered|date:"M d, Y" }}</td>
+                            <td>
+                                <a href="{% url 'myapp:patient_detail' patient.pk %}" class="btn btn-sm btn-info">View</a>
+                                <a href="{% url 'myapp:update_patient' patient.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="{% url 'myapp:delete_patient' patient.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                <p>No patients found. <a href="{% url 'myapp:register_patient' %}">Register a new patient</a></p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

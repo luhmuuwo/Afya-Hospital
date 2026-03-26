@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Hospital Management{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_patient">Patient</label>
+                            {{ form.patient }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_appointment">Appointment (Optional)</label>
+                            {{ form.appointment }}
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label" for="id_services">Services</label>
+                            {{ form.services }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_total_amount">Total Amount</label>
+                            {{ form.total_amount }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_payment_method">Payment Method</label>
+                            {{ form.payment_method }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_payment_status">Payment Status</label>
+                            {{ form.payment_status }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="id_mpesa_payment">M-Pesa Payment Phone</label>
+                            {{ form.mpesa_payment }}
+                            <div class="form-text">Enter phone number in format: 254XXXXXXXXX</div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex gap-2 justify-content-end">
+                        <button type="submit" class="btn btn-primary">Save Bill</button>
+                        <a href="{% url 'myapp:bill_list' %}" class="btn btn-secondary">Back to Bills</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

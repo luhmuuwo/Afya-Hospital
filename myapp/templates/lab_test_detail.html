@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Test Details - Hospital Management{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Lab Test Details</h4>
+                <span class="badge bg-secondary">{{ lab_test.test_name }}</span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Test Information</h6>
+                        <dl class="row">
+                            <dt class="col-sm-5">Patient:</dt>
+                            <dd class="col-sm-7"><strong>{{ lab_test.patient.first_name }} {{ lab_test.patient.last_name }}</strong></dd>
+
+                            <dt class="col-sm-5">Test Name:</dt>
+                            <dd class="col-sm-7"><strong>{{ lab_test.test_name }}</strong></dd>
+
+                            <dt class="col-sm-5">Status:</dt>
+                            <dd class="col-sm-7">
+                                {% if lab_test.status == 'Pending' %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% elif lab_test.status == 'Completed' %}
+                                    <span class="badge bg-success">Completed</span>
+                                {% elif lab_test.status == 'Cancelled' %}
+                                    <span class="badge bg-danger">Cancelled</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ lab_test.status }}</span>
+                                {% endif %}
+                            </dd>
+
+                            <dt class="col-sm-5">Test Date:</dt>
+                            <dd class="col-sm-7">{{ lab_test.test_date|date:"F d, Y H:i" }}</dd>
+
+                            {% if lab_test.completed_date %}
+                            <dt class="col-sm-5">Completed Date:</dt>
+                            <dd class="col-sm-7">{{ lab_test.completed_date|date:"F d, Y H:i" }}</dd>
+                            {% endif %}
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-muted">Additional Details</h6>
+                        <dl class="row">
+                            <dt class="col-sm-5">Requested By:</dt>
+                            <dd class="col-sm-7">
+                                {% if lab_test.requested_by %}
+                                    Dr. {{ lab_test.requested_by.first_name }} {{ lab_test.requested_by.last_name }}
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </dd>
+
+                            <dt class="col-sm-5">Description:</dt>
+                            <dd class="col-sm-7">
+                                {% if lab_test.description %}
+                                    <p>{{ lab_test.description|linebreaks }}</p>
+                                {% else %}
+                                    <span class="text-muted">No description provided</span>
+                                {% endif %}
+                            </dd>
+
+                            <dt class="col-sm-5">Results:</dt>
+                            <dd class="col-sm-7">
+                                {% if lab_test.results %}
+                                    <a href="{{ lab_test.results.url }}" target="_blank" class="btn btn-sm btn-primary">Download Results</a>
+                                {% else %}
+                                    <span class="text-muted">No results uploaded yet</span>
+                                {% endif %}
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="alert alert-light border">
+                    <small class="text-muted">Test requested on: {{ lab_test.test_date|date:"F d, Y H:i" }}</small>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end">
+                    <a href="{% url 'myapp:lab_test_list' %}" class="btn btn-secondary">Back to List</a>
+                    <a href="{% url 'myapp:update_lab_test' lab_test.pk %}" class="btn btn-warning">Edit Test</a>
+                    <a href="{% url 'myapp:delete_lab_test' lab_test.pk %}" class="btn btn-danger">Delete Test</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

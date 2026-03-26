@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor Management{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-5">
+                <i class="fas fa-user-md text-success"></i> Doctor Management
+            </h1>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'myapp:register_doctor' %}" class="btn btn-success btn-lg">
+                <i class="fas fa-user-plus"></i> Register New Doctor
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-success">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Total Doctors</h6>
+                    <p class="display-5 text-success">{{ doctor_count }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctors Grid View -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="row g-4">
+                {% for doctor in doctors %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Dr. {{ doctor.first_name }} {{ doctor.last_name }}</h5>
+                            <p class="text-muted mb-2">
+                                <strong>ID:</strong> {{ doctor.doctor_id }}
+                            </p>
+                            <p class="mb-2">
+                                <strong>Department:</strong> {{ doctor.get_department_display }}
+                            </p>
+                            <p class="mb-2">
+                                <strong>Specialization:</strong> {{ doctor.specialization }}
+                            </p>
+                            <p class="mb-2">
+                                <strong>Email:</strong> {{ doctor.email }}
+                            </p>
+                            <p class="mb-3">
+                                <strong>Phone:</strong> {{ doctor.phone_number }}
+                            </p>
+                            <div class="btn-group w-100" role="group">
+                                <a href="{% url 'myapp:doctor_detail' doctor.pk %}" class="btn btn-sm btn-info">View</a>
+                                <a href="{% url 'myapp:update_doctor' doctor.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="{% url 'myapp:delete_doctor' doctor.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-md-12">
+                    <div class="alert alert-info">No doctors found. <a href="{% url 'myapp:register_doctor' %}" class="alert-link">Register a new doctor</a>.</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Doctors Table View -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">All Doctors (List View)</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Doctor ID</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Specialization</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for doctor in doctors %}
+                            <tr>
+                                <td><strong>{{ doctor.doctor_id }}</strong></td>
+                                <td>Dr. {{ doctor.first_name }} {{ doctor.last_name }}</td>
+                                <td>{{ doctor.get_department_display }}</td>
+                                <td>{{ doctor.specialization }}</td>
+                                <td>{{ doctor.email }}</td>
+                                <td>{{ doctor.phone_number }}</td>
+                                <td>
+                                    <a href="{% url 'myapp:doctor_detail' doctor.pk %}" class="btn btn-sm btn-info">View</a>
+                                    <a href="{% url 'myapp:update_doctor' doctor.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">No doctors found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <a href="{% url 'myapp:homepage' %}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

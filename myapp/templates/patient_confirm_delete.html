@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Patient - Hospital Management{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Confirm Delete</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <p><strong>⚠️ Warning:</strong> This action cannot be undone!</p>
+                </div>
+                
+                <p class="lead mb-4">
+                    Are you sure you want to permanently delete the patient record for:
+                </p>
+                
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Patient ID:</dt>
+                            <dd class="col-sm-8"><strong>{{ patient.patient_id }}</strong></dd>
+                            
+                            <dt class="col-sm-4">Name:</dt>
+                            <dd class="col-sm-8"><strong>{{ patient.first_name }} {{ patient.last_name }}</strong></dd>
+                            
+                            <dt class="col-sm-4">Email:</dt>
+                            <dd class="col-sm-8">{{ patient.email }}</dd>
+                            
+                            <dt class="col-sm-4">Phone:</dt>
+                            <dd class="col-sm-8">{{ patient.phone_number }}</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <p class="text-danger">
+                    <strong>All associated data will be permanently removed from the system.</strong>
+                </p>
+
+                <form method="POST" class="d-flex gap-2 justify-content-end">
+                    {% csrf_token %}
+                    <a href="{% url 'myapp:patient_detail' patient.pk %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-danger">Yes, Delete Patient</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

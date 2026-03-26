@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}M-Pesa Payment Status{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-hourglass-half"></i> M-Pesa Payment Status
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Bill Details -->
+                    <div class="alert alert-light border">
+                        <h6>Bill Information</h6>
+                        <table class="table table-sm table-borderless">
+                            <tr>
+                                <td><strong>Bill ID:</strong></td>
+                                <td>#{{ bill.id }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Patient:</strong></td>
+                                <td>{{ bill.patient.first_name }} {{ bill.patient.last_name }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Amount:</strong></td>
+                                <td class="text-success"><strong>KES {{ bill.total_amount }}</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Transaction Status -->
+                    <div class="alert alert-info">
+                        <h6>Transaction Details</h6>
+                        <table class="table table-sm table-borderless">
+                            <tr>
+                                <td><strong>Transaction ID:</strong></td>
+                                <td><code>{{ transaction.transaction_id }}</code></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phone Number:</strong></td>
+                                <td>{{ transaction.patient_phone }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Amount:</strong></td>
+                                <td>KES {{ transaction.amount }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Status:</strong></td>
+                                <td>
+                                    {% if transaction.status == 'Success' %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check-circle"></i> Success
+                                        </span>
+                                    {% elif transaction.status == 'Pending' %}
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-spinner fa-spin"></i> Pending
+                                        </span>
+                                    {% elif transaction.status == 'Failed' %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times-circle"></i> Failed
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% if transaction.mpesa_receipt %}
+                            <tr>
+                                <td><strong>M-Pesa Receipt:</strong></td>
+                                <td>{{ transaction.mpesa_receipt }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <td><strong>Date:</strong></td>
+                                <td>{{ transaction.created_at|date:"d M Y H:i" }}</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Status Messages -->
+                    {% if transaction.status == 'Pending' %}
+                    <div class="alert alert-warning" role="alert">
+                        <strong><i class="fas fa-info-circle"></i> Payment Processing</strong>
+                        <p class="mb-0">
+                            Your M-Pesa payment is being processed. Please check your phone for the M-Pesa prompt and enter your M-Pesa PIN to complete the transaction.
+                        </p>
+                    </div>
+                    <div class="alert alert-info">
+                        <p class="mb-0"><strong>Tips:</strong></p>
+                        <ul class="mb-0">
+                            <li>Check your phone for an M-Pesa prompt</li>
+                            <li>Enter your M-Pesa PIN when prompted</li>
+                            <li>Wait for the payment confirmation</li>
+                            <li>Refresh this page to check the payment status</li>
+                        </ul>
+                    </div>
+                    {% elif transaction.status == 'Success' %}
+                    <div class="alert alert-success" role="alert">
+                        <strong><i class="fas fa-check-circle"></i> Payment Completed</strong>
+                        <p class="mb-0">
+                            Your payment has been successfully processed. Bill {{ bill.id }} has been marked as paid.
+                        </p>
+                    </div>
+                    {% elif transaction.status == 'Failed' %}
+                    <div class="alert alert-danger" role="alert">
+                        <strong><i class="fas fa-times-circle"></i> Payment Failed</strong>
+                        <p class="mb-0">
+                            Your payment could not be processed. Please try again or contact support.
+                        </p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-2">
+                        {% if transaction.status == 'Pending' %}
+                            <button type="button" class="btn btn-info" onclick="location.reload()">
+                                <i class="fas fa-sync-alt"></i> Refresh Status
+                            </button>
+                        {% elif transaction.status == 'Success' %}
+                            <a href="{% url 'myapp:bill_detail' bill.pk %}" class="btn btn-success">
+                                <i class="fas fa-check"></i> View Bill
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'myapp:bills_management' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Bills
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Lab Tests - Hospital Management{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1 class="mb-4">Laboratory Tests</h1>
+        <div class="card">
+            <div class="card-body">
+                <a href="{% url 'myapp:add_lab_test' %}" class="btn btn-success">+ Add New Lab Test</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Lab Tests ({{ lab_tests.count }})</h3>
+        </div>
+
+        {% if lab_tests %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Patient</th>
+                            <th>Test Name</th>
+                            <th>Status</th>
+                            <th>Test Date</th>
+                            <th>Requested By</th>
+                            <th>Results</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for test in lab_tests %}
+                        <tr>
+                            <td>{{ test.patient.first_name }} {{ test.patient.last_name }}</td>
+                            <td><strong>{{ test.test_name }}</strong></td>
+                            <td>
+                                {% if test.status == 'Pending' %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% elif test.status == 'Completed' %}
+                                    <span class="badge bg-success">Completed</span>
+                                {% elif test.status == 'Cancelled' %}
+                                    <span class="badge bg-danger">Cancelled</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ test.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ test.test_date|date:"M d, Y H:i" }}</td>
+                            <td>
+                                {% if test.requested_by %}
+                                    Dr. {{ test.requested_by.first_name }} {{ test.requested_by.last_name }}
+                                {% else %}
+                                    <span class="text-muted">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if test.results %}
+                                    <a href="{{ test.results.url }}" target="_blank" class="link-primary">Download</a>
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'myapp:lab_test_detail' test.pk %}" class="btn btn-sm btn-info">View</a>
+                                <a href="{% url 'myapp:update_lab_test' test.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="{% url 'myapp:delete_lab_test' test.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                <p>No lab tests found. <a href="{% url 'myapp:add_lab_test' %}">Add a new lab test</a></p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

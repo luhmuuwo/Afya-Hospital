@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Hospital Management{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">{{ title }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.patient.id_for_label }}" class="form-label">Patient *</label>
+                            {{ form.patient }}
+                            {% if form.patient.errors %}
+                                <div class="text-danger small mt-1">{{ form.patient.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.pharmacy_item.id_for_label }}" class="form-label">Pharmacy Item *</label>
+                            {{ form.pharmacy_item }}
+                            {% if form.pharmacy_item.errors %}
+                                <div class="text-danger small mt-1">{{ form.pharmacy_item.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.quantity_issued.id_for_label }}" class="form-label">Quantity to Issue *</label>
+                            {{ form.quantity_issued }}
+                            {% if form.quantity_issued.errors %}
+                                <div class="text-danger small mt-1">{{ form.quantity_issued.errors }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.issued_by.id_for_label }}" class="form-label">Issued By (Doctor)</label>
+                            {{ form.issued_by }}
+                            {% if form.issued_by.errors %}
+                                <div class="text-danger small mt-1">{{ form.issued_by.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">Notes</label>
+                        {{ form.notes }}
+                        {% if form.notes.errors %}
+                            <div class="text-danger small mt-1">{{ form.notes.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a href="{% url 'myapp:pharmacy_item_list' %}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-success">Issue Pharmacy Item</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

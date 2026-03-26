@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Hospital Management{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="display-4 mb-4">Afya Hospital </h1>
+            <p class="lead text-muted">Welcome to the Afya Hospital Management Dashboard. Select a management section below.</p>
+        </div>
+    </div>
+
+    <!-- Main 5 Management Sections -->
+    <div class="row g-4 mb-5">
+        <!-- Patient Management -->
+        <div class="col-md-4 col-lg-2.4">
+            <div class="card shadow-sm border-primary h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-users fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">Patients Management</h5>
+                    <p class="display-6 mb-2 text-primary">{{ patient_count }}</p>
+                    <p class="card-text small text-muted">Register & manage patients</p>
+                    <div class="btn-group-vertical w-100">
+                        <a href="{% url 'myapp:patients_management' %}" class="btn btn-primary btn-sm">Patients</a>
+                        <a href="{% url 'myapp:register_patient' %}" class="btn btn-outline-primary btn-sm">Register New Patient</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Doctor Management -->
+        <div class="col-md-4 col-lg-2.4">
+            <div class="card shadow-sm border-success h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-user-md fa-3x text-success"></i>
+                    </div>
+                    <h5 class="card-title">Doctors Management</h5>
+                    <p class="display-6 mb-2 text-success">{{ doctor_count }}</p>
+                    <p class="card-text small text-muted">Register & manage doctors</p>
+                    <div class="btn-group-vertical w-100">
+                        <a href="{% url 'myapp:doctors_management' %}" class="btn btn-success btn-sm">Doctor </a>
+                        <a href="{% url 'myapp:register_doctor' %}" class="btn btn-outline-success btn-sm">Register New Doctor</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bills & Payments -->
+        <div class="col-md-4 col-lg-2.4">
+            <div class="card shadow-sm border-danger h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-file-invoice-dollar fa-3x text-danger"></i>
+                    </div>
+                    <h5 class="card-title">Bills & Payments</h5>
+                    <p class="display-6 mb-2 text-danger">{{ bill_count }}</p>
+                    <p class="card-text small text-muted">Billing & M-Pesa payments</p>
+                    <div class="btn-group-vertical w-100">
+                        <a href="{% url 'myapp:bills_management' %}" class="btn btn-danger btn-sm">bills management</a>
+                        <a href="{% url 'myapp:create_bill' %}" class="btn btn-outline-danger btn-sm">New Bill</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pharmacy Management -->
+        <div class="col-md-4 col-lg-2.4">
+            <div class="card shadow-sm border-warning h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-pills fa-3x text-warning"></i>
+                    </div>
+                    <h5 class="card-title">Pharmacy Management</h5>
+                    <p class="display-6 mb-2 text-warning">{{ pharmacy_item_count }}</p>
+                    <p class="card-text small text-muted">Inventory & medications</p>
+                    <div class="btn-group-vertical w-100">
+                        <a href="{% url 'myapp:pharmacy_management' %}" class="btn btn-warning btn-sm">Pharmacy records</a>
+                        <a href="{% url 'myapp:add_pharmacy_item' %}" class="btn btn-outline-warning btn-sm">Add Item</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lab Tests Management -->
+        <div class="col-md-4 col-lg-2.4">
+            <div class="card shadow-sm border-info h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-flask fa-3x text-info"></i>
+                    </div>
+                    <h5 class="card-title">Lab Tests</h5>
+                    <p class="display-6 mb-2 text-info">{{ lab_test_count }}</p>
+                    <p class="card-text small text-muted">Test management & results</p>
+                    <div class="btn-group-vertical w-100">
+                        <a href="{% url 'myapp:lab_tests_management' %}" class="btn btn-info btn-sm">Lab records</a>
+                        <a href="{% url 'myapp:add_lab_test' %}" class="btn btn-outline-info btn-sm">New Lab Test</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Row -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-primary">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Total Appointments</h6>
+                    <p class="display-5 text-primary">{{ appointment_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-success">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Medical Reports</h6>
+                    <p class="display-5 text-success">{{ report_count }}</p>
+                </div>
+            </div>
+        </div>
+        {% if low_stock_count %}
+        <div class="col-md-3">
+            <div class="card shadow-sm border-danger">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Low Stock Items</h6>
+                    <p class="display-5 text-danger">{{ low_stock_count }}</p>
+                    <a href="{% url 'myapp:pharmacy_alerts' %}" class="btn btn-danger btn-sm">View</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% if expiring_soon_count %}
+        <div class="col-md-3">
+            <div class="card shadow-sm border-warning">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Expiring Soon</h6>
+                    <p class="display-5 text-warning">{{ expiring_soon_count }}</p>
+                    <a href="{% url 'myapp:pharmacy_alerts' %}" class="btn btn-warning btn-sm">View</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Pending Items Alert -->
+    {% if pending_tests_count %}
+    <div class="row g-4 mb-5">
+        <div class="col-md-12">
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong><i class="fas fa-exclamation-circle"></i> Pending Lab Tests</strong>
+                <p class="mb-0">You have <strong>{{ pending_tests_count }}</strong> lab tests awaiting completion.</p>
+                <a href="{% url 'myapp:lab_test_list' %}" class="btn btn-warning btn-sm mt-2">View Pending Tests</a>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Quick Links Section -->
+    <div class="row g-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Quick Links</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a href="{% url 'myapp:book_appointment' %}" class="btn btn-outline-primary w-100">Book Appointment</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'myapp:medical_reports' %}" class="btn btn-outline-success w-100">View Reports</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'myapp:issue_pharmacy_item' %}" class="btn btn-outline-warning w-100">Issue Pharmacy Item</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'myapp:pharmacy_alerts' %}" class="btn btn-outline-danger w-100">Pharmacy Alerts</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

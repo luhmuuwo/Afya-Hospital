@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Pharmacy Item - Hospital Management{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Confirm Delete</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <p><strong>⚠️ Warning:</strong> This action cannot be undone!</p>
+                </div>
+
+                <p class="lead mb-4">
+                    Are you sure you want to permanently delete the pharmacy item:
+                </p>
+
+                <div class="card bg-light mb-4">
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Name:</dt>
+                            <dd class="col-sm-8"><strong>{{ pharmacy_item.name }}</strong></dd>
+
+                            <dt class="col-sm-4">Quantity:</dt>
+                            <dd class="col-sm-8">{{ pharmacy_item.quantity }}</dd>
+
+                            <dt class="col-sm-4">Price:</dt>
+                            <dd class="col-sm-8">${{ pharmacy_item.price }}</dd>
+
+                            <dt class="col-sm-4">Expiry Date:</dt>
+                            <dd class="col-sm-8">{{ pharmacy_item.expiry_date|date:"M d, Y" }}</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <p class="text-danger">
+                    <strong>All associated issue history will be permanently removed from the system.</strong>
+                </p>
+
+                <form method="POST" class="d-flex gap-2 justify-content-end">
+                    {% csrf_token %}
+                    <a href="{% url 'myapp:pharmacy_item_detail' pharmacy_item.pk %}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-danger">Yes, Delete Pharmacy Item</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

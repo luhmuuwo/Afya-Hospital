@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}Pharmacy Management{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="display-5">
+                <i class="fas fa-pills text-warning"></i> Pharmacy Management
+            </h1>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'myapp:add_pharmacy_item' %}" class="btn btn-warning btn-lg">
+                <i class="fas fa-plus"></i> Add New Item
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-primary">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Total Items</h6>
+                    <p class="display-5 text-primary">{{ item_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-danger">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Low Stock</h6>
+                    <p class="display-5 text-danger">{{ low_stock_count }}</p>
+                    <a href="{% url 'myapp:pharmacy_alerts' %}" class="btn btn-danger btn-sm">View</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-warning">
+                <div class="card-body text-center">
+                    <h6 class="card-title text-muted">Expiring Soon</h6>
+                    <p class="display-5 text-warning">{{ expiring_soon_count }}</p>
+                    <a href="{% url 'myapp:pharmacy_alerts' %}" class="btn btn-warning btn-sm">View</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pharmacy Action Buttons -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md-3">
+                            <a href="{% url 'myapp:issue_pharmacy_item' %}" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-dolly"></i> Issue Item
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'myapp:pharmacy_alerts' %}" class="btn btn-outline-danger w-100">
+                                <i class="fas fa-exclamation-circle"></i> View Alerts
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pharmacy Items Table -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Pharmacy Inventory</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Price per Unit</th>
+                                <th>Batch Number</th>
+                                <th>Expiry Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in pharmacy_items %}
+                            <tr>
+                                <td><strong>{{ item.name }}</strong></td>
+                                <td>
+                                    {% if item.quantity <= 10 %}
+                                        <span class="badge bg-danger">{{ item.quantity }}</span>
+                                    {% elif item.quantity <= 50 %}
+                                        <span class="badge bg-warning">{{ item.quantity }}</span>
+                                    {% else %}
+                                        <span class="badge bg-success">{{ item.quantity }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>KES {{ item.price }}</td>
+                                <td>{{ item.batch_number|default:"N/A" }}</td>
+                                <td>{{ item.expiry_date|date:"d M Y" }}</td>
+                                <td>
+                                    {% if item.is_expired %}
+                                        <span class="badge bg-danger">Expired</span>
+                                    {% elif item.is_expiring_soon %}
+                                        <span class="badge bg-warning">Expiring Soon</span>
+                                    {% elif item.quantity <= 10 %}
+                                        <span class="badge bg-warning">Low Stock</span>
+                                    {% else %}
+                                        <span class="badge bg-success">In Stock</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'myapp:pharmacy_item_detail' item.pk %}" class="btn btn-sm btn-info">View</a>
+                                    <a href="{% url 'myapp:update_pharmacy_item' item.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">No pharmacy items found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <a href="{% url 'myapp:homepage' %}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

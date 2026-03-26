@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}M-Pesa Callback Response{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-secondary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-check-circle"></i> M-Pesa Callback Response
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <p class="mb-0">
+                            <strong>M-Pesa Payment Callback</strong>
+                        </p>
+                        <small class="text-muted">This page confirms that a payment callback was received from M-Pesa Daraja API.</small>
+                    </div>
+
+                    <div class="alert alert-light border">
+                        <h6>Response Information</h6>
+                        <p class="mb-2">
+                            <strong>Status:</strong> The callback has been processed successfully.
+                        </p>
+                        <p class="mb-0">
+                            Check your bill and email for payment confirmation details.
+                        </p>
+                    </div>
+
+                    <div class="text-center">
+                        <a href="{% url 'myapp:homepage' %}" class="btn btn-primary">
+                            <i class="fas fa-home"></i> Back to Dashboard
+                        </a>
+                        <a href="{% url 'myapp:bills_management' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-file-invoice-dollar"></i> View Bills
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

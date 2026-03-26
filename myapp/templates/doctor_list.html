@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor List - Hospital Management{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <h1 class="mb-4">Doctors</h1>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Registered Doctors ({{ doctors.count }})</h3>
+            <a href="{% url 'myapp:register_doctor' %}" class="btn btn-success">+ Add New Doctor</a>
+        </div>
+
+        {% if doctors %}
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Doctor ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Specialization</th>
+                            <th>Department</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doctor in doctors %}
+                        <tr>
+                            <td><strong>{{ doctor.doctor_id }}</strong></td>
+                            <td>{{ doctor.first_name }} {{ doctor.last_name }}</td>
+                            <td>{{ doctor.email }}</td>
+                            <td>{{ doctor.specialization }}</td>
+                            <td>{{ doctor.get_department_display }}</td>
+                            <td>
+                                <a href="{% url 'myapp:doctor_detail' doctor.pk %}" class="btn btn-sm btn-info">View</a>
+                                <a href="{% url 'myapp:doctor_appointments' doctor.pk %}" class="btn btn-sm btn-secondary">Appointments</a>
+                                <a href="{% url 'myapp:update_doctor' doctor.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="{% url 'myapp:delete_doctor' doctor.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                <p>No doctors found. <a href="{% url 'myapp:register_doctor' %}">Add a new doctor</a></p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
